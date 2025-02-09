@@ -1,4 +1,13 @@
-FROM ubuntu:latest
+#################################################
+# docker build -t icrsc/cca:v1 .
+
+# docker run --rm -it -v ./login/temp:/home:rw tohsumirepare/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+# docker run --rm -it -v ./login/temp2:/home:rw icrsc/cca:v1 crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+
+#################################################
+#FROM ubuntu:latest
+FROM ubuntu:20.04
+
 
 ENV DEBIAN_FRONTEND=noninteractive
 
