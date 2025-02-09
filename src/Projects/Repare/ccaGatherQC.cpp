@@ -2,8 +2,6 @@
 // MolBioLib: A C++11 framework for rapidly developing bioinformatics tasks //
 // Copyright (C)  2019  Repare Therapeutics                                 //
 //////////////////////////////////////////////////////////////////////////////
-
-
 /** \file ccaGatherQC.cpp
  * Gather CCA QC files and plots and output a HTML file.
  * Assumes a standard CCA output directory with OUT_MAX used.

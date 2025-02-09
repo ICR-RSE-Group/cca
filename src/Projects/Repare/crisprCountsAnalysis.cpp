@@ -1859,14 +1859,17 @@ int main(int argc, char* argv[])
   }
 
   if (MEDIAN_NORMALIZATION) {
+    cout << "Median normalizing counts." << endl;
     median_normalize_counts(t0, count);
   }
 
   if (MAX_CONTROL_RATIO > 0.0) {
+    cout << "Cap control ratios." << endl;
     cap_control_ratio(t0, count, sample2T0, T0s, isControl, MAX_CONTROL_RATIO);
   }
 
   if (CORRELATION_PREFIX != "") {
+    cout << "Correlating counts." << endl;
     counts_corr(t0, count, CORRELATION_R, CORRELATION_PREFIX, MIN_CORRELATION_OUTPUT, CHEMO, CHEMO_PAIRED, test2ctrl);
     if (INITQC_PREFIX != "") {
       system("Rscript --vanilla \"" + INITQC + "\" \"" + 
@@ -1878,7 +1881,7 @@ int main(int argc, char* argv[])
 
   if (RESISTOR_SCREEN) {
     // Do primary resistor screen analysis here.
-
+    cout << "Doing resistor screen analysis." << endl;
     Table<double, string> out_lines;
     for (auto gene : count) {
       string curr_gene = gene.first;
@@ -1960,6 +1963,7 @@ int main(int argc, char* argv[])
 
 
     if (ADD_UNIPROT) {
+      cout << "Adding Uniprot." << endl;
       ReadOnlyTSVFile ifpU(UNIPROT, true, true);
       ifpU.readRow(0);
       bool gene_found = false;
@@ -2030,6 +2034,7 @@ int main(int argc, char* argv[])
   if (STOP_AFTER_CORRELATION) {
     // Below is part of the Imagemagick package.
     // mogrify trim will remove all white borders from the *.png files
+    cout << "Trimming images." << endl;
     string OUT_DIR = "./";
     if (OUT.find("/") != string::npos) {
       // false below finds the last instance of / in the OUT path.
@@ -2118,7 +2123,7 @@ int main(int argc, char* argv[])
     splitString(curr_line, "\t", tokens);
     string curr_gene = tokens[0];
 
-    if (ADD_PARALOGS) {
+    if (ADD_PARALOGS) {      
       string curr_ensembl_paralogs = "";
       if (ensembl_paralogs.find(curr_gene) != ensembl_paralogs.end()) {
         curr_ensembl_paralogs = ensembl_paralogs[curr_gene];
@@ -2204,6 +2209,7 @@ int main(int argc, char* argv[])
 
 
   if (BARPLOT_HEAD != "" && CORRELATION_PREFIX != "") {
+    cout << "Creating barplots." << endl;
     if (REPMAP.find(",") != string::npos) {
       cerr << "Warning!  Barplots are not available when using more than one REPMAP.  Skipping." << endl;
     } else {
@@ -2218,20 +2224,26 @@ int main(int argc, char* argv[])
   // The logic is easier to process the output and sort and rank the
   // score without a proliferation penalty, than to add it earlier.
   if (!CHEMO) {
+    cout << "Ranking scores without proliferation penalty." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_before_rank_score_wo_prolif\"");
     system("sync");
     //    wo_prolif  org_rank
+    cout << "Reading tsv file..." << endl;
     ReadOnlyTSVFile ifpWP(OUT + ".temp_before_rank_score_wo_prolif", true, true);
+    cout << "...read tsv file" << endl;    
     ifpWP.readRow(0);
+    cout << "...read row" << endl;
     vector<string> header = ifpWP.tokens;
     size_t rank_col = numeric_limits<size_t>::max(),
            wo_prolif_col = numeric_limits<size_t>::max();
     for (size_t i = 0; i < header.size(); ++i) {
+      cout << "\t" << i <<  " header." << endl;
       if (header[i] == "Rank") rank_col = i;
       else if (header[i] == "Score without proliferation penalty") wo_prolif_col = i;
     }
     Table<double, size_t, vector<string> > wp_data;
     for (size_t i = 1; !ifpWP.fail(); ++i) {
+      //cout << "\t" << i <<  " data." << endl;
       ifpWP.readRow(i);
       wp_data.push_back(convertFromString<double>(ifpWP.tokens[wo_prolif_col]),
                         convertFromString<size_t>(ifpWP.tokens[rank_col]),
@@ -2242,6 +2254,7 @@ int main(int argc, char* argv[])
     // True = sort by largest score without proliferation penality first.
     sortTable<0>(wp_data, true);
     for (size_t i = 0; i < wp_data.size(); ++i) {
+      //cout << "\t" << i <<  " table." << endl;
       double curr_score = 0.0;
       size_t curr_rank = 0;
       vector<string> tokens; 
@@ -2255,6 +2268,7 @@ int main(int argc, char* argv[])
     Ofstream ofpWP(OUT);
     ofpWP << joinStrings(header) << endl;
     for (size_t i = 0; i < wp_data.size(); ++i) {
+      //cout << "\t" << i <<  " wp_data." << endl;
       double curr_score = 0.0;
       size_t curr_rank = 0;
       vector<string> tokens; 
@@ -2268,6 +2282,7 @@ int main(int argc, char* argv[])
 
 
   if (POSITIVE_CONTROLS != "") {
+    cout << "Evaluating precision and recall." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_before_precision_recall\"");
     system("sync");
     ReadOnlyTSVFile ifpPR(OUT + ".temp_before_precision_recall", true, true);
@@ -2305,6 +2320,7 @@ int main(int argc, char* argv[])
  
 
   if (ADD_Z_SCORES && CHEMO && CHEMO_PAIRED && CORRELATION_PREFIX != "") {
+    cout << "Adding Z-scores." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_paired_diff_zvals\"");
     system("sync");
 
@@ -2837,6 +2853,7 @@ int main(int argc, char* argv[])
 
 
   if (ADD_COEFF_VAR) {
+    cout << "Adding coefficient of variation." << endl;
     system("mv " + OUT + " " + OUT + ".temp_coeff_var");
     system("sync");
     vector<float> test_cvs, ctrl_cvs, diff_cvs;
@@ -2900,6 +2917,7 @@ int main(int argc, char* argv[])
 
 
   if (KILLING_PLOTS != "") {
+    cout << "Adding killing plots." << endl;
     system("mv " + OUT + " " + OUT + ".temp_before_killing");
     system("sync");
     system("Rscript --vanilla \"" + EVAL_KILLING + "\" \"" + 
@@ -3062,6 +3080,7 @@ int main(int argc, char* argv[])
 
 
   if (CUTOFF != "") {
+    cout << "Adding cutoffs." << endl;
     string strata = "";
     if (STRATAS != "") {
       strata = "\"" + STRATAS + "\" " + 
@@ -3072,8 +3091,8 @@ int main(int argc, char* argv[])
     system("Rscript --vanilla \"" + EVAL_BETA + "\" \"" + OUT + "\" \"" +
             CUTOFF + "\" " + convertToString<size_t>(BETA_TOP_N) + " " +
             convertToString<double>(CUTOFF_P) + " TRUE " + strata);
-    if (STRATAS != "" &&
-        fileSize(CUTOFF) != static_cast<ifstream::pos_type>(-1) &&
+    if (STRATAS != "" &&      
+      fileSize(CUTOFF) != static_cast<ifstream::pos_type>(-1) &&
         fileSize(STRATAS + ".temp_rank_classes") != 
         static_cast<ifstream::pos_type>(-1)) {
       ReadOnlyTSVFile ifpC(CUTOFF, true, true);
@@ -3126,6 +3145,7 @@ int main(int argc, char* argv[])
 
 
   if (ADD_Z_SCORES && CUTOFF_Z != "") {
+    cout << "Adding Z-score cutoffs." << endl;
     ReadOnlyTSVFile ifpZ1(OUT, true, true);
     ifpZ1.readRow(0);
     size_t rank_col = numeric_limits<size_t>::max();
@@ -3152,6 +3172,7 @@ int main(int argc, char* argv[])
     // Next, do stratas as usual.
     string strata = "";
     if (STRATAS_Z != "") {
+      cout << "Adding Z-score stratas." << endl;
       strata = "\"" + STRATAS_Z + "\" " + 
                convertToString<size_t>(NUM_STRATA) + " " +
                convertToString<size_t>(STRATA_ADD) + " \"" +
@@ -3163,8 +3184,8 @@ int main(int argc, char* argv[])
     if (STRATAS_Z != "" &&
         fileSize(CUTOFF_Z) != static_cast<ifstream::pos_type>(-1) &&
         fileSize(STRATAS_Z + ".temp_rank_classes") !=
-        static_cast<ifstream::pos_type>(-1)) {
-      ReadOnlyTSVFile ifpCZ(CUTOFF_Z, true, true);
+        static_cast<ifstream::pos_type>(-1)) {          
+          ReadOnlyTSVFile ifpCZ(CUTOFF_Z, true, true);
       ifpCZ.readRow(1);
       size_t max_rank = convertFromString<size_t>(ifpCZ.tokens[2]);
       ifpCZ.close();
@@ -3225,6 +3246,7 @@ int main(int argc, char* argv[])
       ((ADD_Z_SCORES && CHEMO && CHEMO_PAIRED && CORRELATION_PREFIX != "") ||
        (ADD_Z_SCORES && 
         (!CHEMO || !CHEMO_PAIRED) && CORRELATION_PREFIX != ""))) {
+    cout << "Adding precision-recall." << endl;
     ReadOnlyTSVFile ifpZ1(OUT, true, true);
     ifpZ1.readRow(0);
     size_t rank_col = numeric_limits<size_t>::max();
@@ -3290,6 +3312,7 @@ int main(int argc, char* argv[])
   }
 
   if (ADD_UNIPROT) {
+    cout << "Adding Uniprot." << endl;
     ReadOnlyTSVFile ifpU(UNIPROT, true, true);
     ifpU.readRow(0);
     bool gene_found = false;
@@ -3368,6 +3391,7 @@ int main(int argc, char* argv[])
 
   if (RUN_GATHER_QC && CORRELATION_PREFIX != "" &&
       GATHER_QC_HTML != "" && GATHER_QC_TSV != "") {
+    cout << "Running gatherQC." << endl;
     string at_home = AT_HOME ? "AT_HOME=true" : "";
     system("ccaGatherQC COUNTS=\"" + COUNTS + "\" CORREL_NORMED_COUNTS=\"" + CORRELATION_PREFIX + ".normed_counts.tsv\" TSV=\"" + GATHER_QC_TSV + "\" HTML=\"" + GATHER_QC_HTML + "\" PREFIX=\"cca_files/\" " + at_home);
   }
@@ -3378,6 +3402,7 @@ int main(int argc, char* argv[])
   system("mkdir -p " + cca_outdir);
   cerr << "It is OK, if there are some no such file errors below.  Not all files are always generated, depending on the data and input parameters." << endl;
   if (INITQC_INPUT_PREFIX != "") {
+    cout << "Moving INITQC files." << endl;
     for (size_t k = 0; k < count_files.size(); ++k) {
       system("mv " + count_files[k] + INITQC_INPUT_PREFIX + "* " + cca_outdir);
       system("sync");

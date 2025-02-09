@@ -1,5 +1,6 @@
 library(ggplot2)
 
+print("RSCRIPT-barplotGenes.R")
 args = commandArgs(trailingOnly=TRUE)
 data <- as.data.frame(read.delim(args[1], header = TRUE))
 start <- as.numeric(args[3])
@@ -36,4 +37,4 @@ if (args[6] == "N") {
             plot.margin = unit(c(300,5,100,50), "points"))
 
 }
-dev.off()
+garbage <- dev.off()

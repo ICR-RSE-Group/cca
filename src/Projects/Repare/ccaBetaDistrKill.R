@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+print("RSCRIPT-ccaBetaDistrKill")
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 3 && length(args) != 4) {
   stop("This script need arguments 1. input file, 2. output file, 3. plot header, optional 4. top number of genes (default 300)", call.=FALSE)
@@ -29,7 +30,7 @@ ess_data <- subset(data[data$Essential == "Essential", ], select = "Transformed"
 plotfile <- paste(args[3], ".essential.cullen_and_frey.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 descdist(ess_data$Transformed, boot = 1000)
-dev.off()
+invisible(dev.off())
 # While AD2L is probably more accurate, the algorithm cannot often
 # evaluate the function at the initial parameters.
 # fit_ess <- fitdist(ess_data$Transformed, "beta", method = "mge", gof = "AD2L")
@@ -37,15 +38,15 @@ fit_ess <- fitdist(ess_data$Transformed, "beta", method = "mge", gof = "CvM")
 plotfile <- paste(args[3], ".essential.denscomp.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 denscomp(fit_ess)
-dev.off()
+invisible(dev.off())
 plotfile <- paste(args[3], ".essential.cdfcomp.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 cdfcomp(fit_ess)
-dev.off()
+invisible(dev.off())
 plotfile <- paste(args[3], ".all_data.density.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 plot(density(data$Transformed))
-dev.off()
+invisible(dev.off())
 
 shape1 <- fit_ess$estimate[1]
 shape2 <- fit_ess$estimate[2]
@@ -61,11 +62,11 @@ sorted_essential_killing <- sort(ess_kill, decreasing = TRUE)
 plotfile <- paste(args[3], ".use_this.essential.killing.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 plot(sorted_essential_killing)
-dev.off()
+invisible(dev.off())
 plotfile <- paste(args[3], ".essential.killing_histogram.png", sep = "")
 png(plotfile, width = 1000, height = 750)
 plot(hist(sorted_essential_killing))
-dev.off()
+invisible(dev.off())
 
 sek <- as.data.frame(sorted_essential_killing)
 len_sek <- nrow(sek)

@@ -1,3 +1,13 @@
+#################################
+# docker build -t icrsc/cca .
+
+# docker run --rm -it -v ./login/temp:/home:rw tohsumirepare/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+# docker run --rm -it -v ./login/temp2:/home:rw icrsc/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+
+#sudo rm -rf login/temp/cca_files
+#sudo rm -rf login/temp2/cca_files
+#################################
+
 FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,6 +19,7 @@ RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential gfortran libblas-dev liblapack-dev libz-dev bwa wget r-base libpng-dev imagemagick
 
+#RUN Rscript -e "install.packages('rspm') ; rspm::enable()" 
 RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('fitdistrplus')"
 RUN Rscript -e "install.packages('classInt')"
