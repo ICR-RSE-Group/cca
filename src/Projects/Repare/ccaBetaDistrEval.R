@@ -1,4 +1,6 @@
 #!/usr/bin/env Rscript
+print("RSCRIPT-ccaBetaDistrEval")
+
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 2 || length(args) > 9) {
   stop("This script need arguments 1. input file, 2. output file, 3. optional number of entries to use (default = 3000), 4. optional p-value (default = 0.05), 5. optional whether to output a header (default = FALSE), 6. optional output Jenks natural breaks (default = \"\"), 7. the number of Jenks classes (default = 4), 8. optional how much more than the cutoff to use for the Jenks breaks (default = 0), and 9. optional output file of the classes.", call.=FALSE)
@@ -75,7 +77,7 @@ plotJenks <- function(data, n=3, plotfile="jenks.png", temp_strata = "", brks.ce
   plot(x=df$sorted.values, y=c(1:nrow(df)), type="b", main=paste0("Jenks natural breaks optimization; number of classes: ", n), sub=paste0("Goodness of Fit: ", round(test[[2]],4), ". Max GoF (", round(max(loop.res),4), ") with classes:", max.GoF.brks), ylim =c(0, nrow(df)+top.margin), cex=0.75, cex.main=0.95, cex.sub=0.7, ylab="observation index", xlab="value (increasing order)")
   abline(v=Jclassif$brks, lty=3, col="red")
   text(x=Jclassif$brks, y= max(nrow(df)) + dist, labels=sort(round(Jclassif$brks, 2)), cex=brks.cex, srt=90)
-  dev.off()
+  garbage <- dev.off()
   results <- list("info"=info, "classif" = Jclassif, "breaks.max.GoF"=max.GoF.brks, "class.data" = df)
   return(results)
 }
@@ -98,7 +100,7 @@ if (((str_sub(cullen_file, start= -4) == ".tsv") == TRUE) ||
 cullen_file <- paste(cullen_file, ".cullen_and_frey.png", sep = "")
 png(cullen_file, width = 1000, height = 750)
 descdist(transformed_scores, boot = 1000)
-dev.off()
+garbage <- dev.off()
 
 # While AD2L is probably better more accurate, the algorithm cannot often
 # evaluate the function at the initial parameters.

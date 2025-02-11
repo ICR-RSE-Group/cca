@@ -1,4 +1,6 @@
 #!/usr/bin/env Rscript
+print("RSCRIPT-ccaPrPlots")
+
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 2 || length(args) > 3) {
   stop("This script need arguments 1. input file, 2. output head, and 3. if it is the CCA score we are doing (0), non-parametric Z score (1), median depletion (2), or Q3 depletion (3).")
@@ -38,7 +40,7 @@ if ((score_choice == 0) || (score_choice == 1)) {
   png(paste(output_head, ".depletion_vs_recall.png", sep = ""), width = 1000, height = 725)
   plot(x=sub_data$Depletion, y=sub_data$Recall, xlab="Depletion", ylab="Recall", ylim=c(0,1))
 }
-dev.off()
+invisible(dev.off())
 
 if ((score_choice == 0) || (score_choice == 1)) {
   png(paste(output_head, ".score_vs_FDR.png", sep = ""), width = 1000, height = 725)
@@ -47,11 +49,11 @@ if ((score_choice == 0) || (score_choice == 1)) {
   png(paste(output_head, ".depletion_vs_FDR.png", sep = ""), width = 1000, height = 725)
   plot(x=sub_data$Depletion, y=sub_data$FDR, xlab="Depletion", ylab="FDR (1-Precision)", ylim=c(0,1))
 }
-dev.off()
+invisible(dev.off())
 
 png(paste(output_head, ".recall_vs_precision.png", sep = ""), width = 1000, height = 725)
 plot(x=sub_data$Recall, y=sub_data$Precision, xlab="Recall", ylab="Precision", xlim=c(0,1), ylim=c(0,1))
-dev.off()
+invisible(dev.off())
 
 roc <- roc.curve(scores.class0 = sub_data$Recall, scores.class1 = sub_data$FDR, curve = TRUE)
 sink(paste(output_head, ".ROC.tsv", sep = ""))
@@ -63,5 +65,5 @@ png(paste(output_head, ".ROC.png", sep = ""), width = 1000, height = 725)
 plot(roc, xlab="FDR (1-Precison)", ylab="Recall (True positive rate)")
 # Old plot below.
 # plot(x=sub_data$FDR, y=sub_data$Recall, xlab="FDR (1-Precison)", ylab="Recall (True positive rate)", xlim=c(0,1), ylim=c(0,1))
-dev.off()
+invisible(dev.off())
 

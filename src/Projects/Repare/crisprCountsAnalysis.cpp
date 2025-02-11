@@ -1385,7 +1385,7 @@ void compute_output_lines(set<string>& ess,
 
 
 int main(int argc, char* argv[])
-{
+{  
   BeginCommandArguments
   CommandArgumentBoolDefaultDoc("AT_HOME", AT_HOME, true, "If true, then all files are assumed to be in /home, so /home/ is prepended to the input and output.  For Docker version only.");
   CommandArgumentStringDoc("COUNTS", COUNTS, "CSV of files, each of form sgRNA[tab]Gene[tab]Sample1[tab]Sample2[tab]...");
@@ -1471,6 +1471,96 @@ int main(int argc, char* argv[])
   CommandArgumentBoolDefaultDoc("ADD_UNIPROT", ADD_UNIPROT, true, "If true, add Uniprot and GO annotations to each gene.   Warning!  This will greatly increase the size of the CCA output table.");
   CommandArgumentFileInDefaultDoc("UNIPROT", UNIPROT, "/root/data/Uniprot/uniprot-human-gene-function-go.txt", "Uniprot file.");
   EndCommandArguments
+
+  const clock_t begin_time = clock();
+
+  //#############################################################################
+  cout << " ************ INPUTS ************ " << endl;
+  cout << "AT_HOME:\t" << AT_HOME << endl;
+  cout << "COUNTS:\t" << COUNTS << endl;
+  cout << "REPMAP:\t" << REPMAP << endl;
+  cout << "ALLOW_SUPERSET:\t" << ALLOW_SUPERSET << endl;
+  cout << "PARAMS:\t" << PARAMS << endl;
+  cout << "SINGLE_CELL_LINE:\t" << SINGLE_CELL_LINE << endl;
+  cout << "CHEMO:\t" << CHEMO << endl;
+  cout << "CHEMO_PAIRED:\t" << CHEMO_PAIRED << endl;
+  cout << "CHEMO_NO_DEPLETION:\t" << CHEMO_NO_DEPLETION << endl;
+  cout << "RESISTOR_SCREEN:\t" << RESISTOR_SCREEN << endl;
+  cout << "MAX_CONTROL_RATIO:\t" << MAX_CONTROL_RATIO << endl;
+  cout << "RESISTOR_OUT:\t" << RESISTOR_OUT << endl;
+  cout << "ADD_COEFF_VAR:\t" << ADD_COEFF_VAR << endl;
+  cout << "MAX_MEDIAN_DIFF:\t" << MAX_MEDIAN_DIFF << endl;
+  cout << "MEDIAN_NORMALIZATION:\t" << MEDIAN_NORMALIZATION << endl;
+  cout << "CORRELATION_R:\t" << CORRELATION_R << endl;
+  cout << "CORRELATION_PREFIX:\t" << CORRELATION_PREFIX << endl;
+  cout << "STOP_AFTER_CORRELATION:\t" << STOP_AFTER_CORRELATION << endl;
+  cout << "BARPLOT_HEAD:\t" << BARPLOT_HEAD << endl;
+  cout << "BARPLOT_ADD_RANK:\t" << BARPLOT_ADD_RANK << endl;
+  cout << "BARPLOT_TOP_N:\t" << BARPLOT_TOP_N << endl;
+  cout << "BARPLOT_MIN:\t" << BARPLOT_MIN << endl;
+  cout << "BARPLOT_MAX:\t" << BARPLOT_MAX << endl;
+  cout << "BARPLOT_BY:\t" << BARPLOT_BY << endl;
+  cout << "BARPLOT_NEG_LOG2:\t" << BARPLOT_NEG_LOG2 << endl;
+  cout << "BARPLOT_EPSILON:\t" << BARPLOT_EPSILON << endl;
+  cout << "ADD_Z_SCORES:\t" << ADD_Z_SCORES << endl;
+  cout << "Z_SCORES_MIN:\t" << Z_SCORES_MIN << endl;
+  cout << "Z_SCORES_HALF_WINDOW:\t" << Z_SCORES_HALF_WINDOW << endl;
+  cout << "Z_SCORES_WINDOW_MIN:\t" << Z_SCORES_WINDOW_MIN << endl;
+  cout << "Z_SCORES_L:\t" << Z_SCORES_L << endl;
+  cout << "MIN_CORRELATION_OUTPUT:\t" << MIN_CORRELATION_OUTPUT << endl;
+  cout << "DETREND:\t" << DETREND << endl;
+  cout << "DETREND_AUTO:\t" << DETREND_AUTO << endl;
+  cout << "DETREND_DIR:\t" << DETREND_DIR << endl;
+  cout << "DETREND_COLUMNS:\t" << DETREND_COLUMNS << endl;
+  cout << "DETREND_BASE:\t" << DETREND_BASE << endl;
+  cout << "DETREND_OUT:\t" << DETREND_OUT << endl;
+  cout << "DETREND_MIN_PCT:\t" << DETREND_MIN_PCT << endl;
+  cout << "ESS:\t" << ESS << endl;
+  cout << "ADD_RIBO:\t" << ADD_RIBO << endl;
+  cout << "ESS_RIBO:\t" << ESS_RIBO << endl;
+  cout << "NONESS:\t" << NONESS << endl;
+  cout << "INITQC:\t" << INITQC << endl;
+  cout << "INITQC_INPUT_PREFIX:\t" << INITQC_INPUT_PREFIX << endl;
+  cout << "INITQC_PREFIX:\t" << INITQC_PREFIX << endl;
+  cout << "NUM_THREADS:\t" << NUM_THREADS << endl;
+  cout << "MIXED_LIBRARIES:\t" << MIXED_LIBRARIES << endl;
+  cout << "SGRNA_PAIRED_DIFFERENCES:\t" << SGRNA_PAIRED_DIFFERENCES << endl;
+  cout << "ADD_TOP_TWO:\t" << ADD_TOP_TWO << endl;
+  cout << "KILLING_PLOTS:\t" << KILLING_PLOTS << endl;
+  cout << "EVAL_KILLING:\t" << EVAL_KILLING << endl;
+  cout << "FC_KILLING:\t" << FC_KILLING << endl;
+  cout << "TOP_FC_KILL_GENES:\t" << TOP_FC_KILL_GENES << endl;
+  cout << "NORMALIZED_COUNT:\t" << NORMALIZED_COUNT << endl;
+  cout << "MIN_T0:\t" << MIN_T0 << endl;
+  cout << "LARGE_NEG:\t" << LARGE_NEG << endl;
+  cout << "ADD_RESISTORS:\t" << ADD_RESISTORS << endl;
+  cout << "TSG_FILE:\t" << TSG_FILE << endl;
+  cout << "ENSEMBL_PARALOGS:\t" << ENSEMBL_PARALOGS << endl;
+  cout << "ADD_PARALOGS:\t" << ADD_PARALOGS << endl;
+  cout << "EVAL_BETA:\t" << EVAL_BETA << endl;
+  cout << "EVAL_BETA_Z:\t" << EVAL_BETA_Z << endl;
+  cout << "BETA_TOP_N:\t" << BETA_TOP_N << endl;
+  cout << "CUTOFF_P:\t" << CUTOFF_P << endl;
+  cout << "CUTOFF:\t" << CUTOFF << endl;
+  cout << "CUTOFF_Z:\t" << CUTOFF_Z << endl;
+  cout << "STRATAS:\t" << STRATAS << endl;
+  cout << "STRATAS_Z:\t" << STRATAS_Z << endl;
+  cout << "NUM_STRATA:\t" << NUM_STRATA << endl;
+  cout << "STRATA_ADD:\t" << STRATA_ADD << endl;
+  cout << "PRECISION_RECALL:\t" << PRECISION_RECALL << endl;
+  cout << "POSITIVE_CONTROLS:\t" << POSITIVE_CONTROLS << endl;
+  cout << "POSITIVE_AUTO:\t" << POSITIVE_AUTO << endl;
+  cout << "POSITIVE_DIR:\t" << POSITIVE_DIR << endl;
+  cout << "EVAL_PR:\t" << EVAL_PR << endl;
+  cout << "OUT:\t" << OUT << endl;
+  cout << "OUT_MAX:\t" << OUT_MAX << endl;
+  cout << "RUN_GATHER_QC:\t" << RUN_GATHER_QC << endl;
+  cout << "GATHER_QC_HTML:\t" << GATHER_QC_HTML << endl;
+  cout << "GATHER_QC_TSV:\t" << GATHER_QC_TSV << endl;
+  cout << "ADD_UNIPROT:\t" << ADD_UNIPROT << endl;
+  cout << "UNIPROT:\t" << UNIPROT << endl;
+  cout << " ******************************** " << endl;
+  //#############################################################################
 
   if (MAX_CONTROL_RATIO == -1.0) {
     if (CHEMO || RESISTOR_SCREEN) MAX_CONTROL_RATIO = 0.0;
@@ -1859,14 +1949,17 @@ int main(int argc, char* argv[])
   }
 
   if (MEDIAN_NORMALIZATION) {
+    cout << "Median normalizing counts." << endl;
     median_normalize_counts(t0, count);
   }
 
   if (MAX_CONTROL_RATIO > 0.0) {
+    cout << "Cap control ratios." << endl;
     cap_control_ratio(t0, count, sample2T0, T0s, isControl, MAX_CONTROL_RATIO);
   }
 
   if (CORRELATION_PREFIX != "") {
+    cout << "Correlating counts." << endl;
     counts_corr(t0, count, CORRELATION_R, CORRELATION_PREFIX, MIN_CORRELATION_OUTPUT, CHEMO, CHEMO_PAIRED, test2ctrl);
     if (INITQC_PREFIX != "") {
       system("Rscript --vanilla \"" + INITQC + "\" \"" + 
@@ -1878,7 +1971,7 @@ int main(int argc, char* argv[])
 
   if (RESISTOR_SCREEN) {
     // Do primary resistor screen analysis here.
-
+    cout << "Doing resistor screen analysis." << endl;
     Table<double, string> out_lines;
     for (auto gene : count) {
       string curr_gene = gene.first;
@@ -1960,6 +2053,7 @@ int main(int argc, char* argv[])
 
 
     if (ADD_UNIPROT) {
+      cout << "Adding Uniprot." << endl;
       ReadOnlyTSVFile ifpU(UNIPROT, true, true);
       ifpU.readRow(0);
       bool gene_found = false;
@@ -2030,6 +2124,7 @@ int main(int argc, char* argv[])
   if (STOP_AFTER_CORRELATION) {
     // Below is part of the Imagemagick package.
     // mogrify trim will remove all white borders from the *.png files
+    cout << "Trimming images." << endl;
     string OUT_DIR = "./";
     if (OUT.find("/") != string::npos) {
       // false below finds the last instance of / in the OUT path.
@@ -2118,7 +2213,7 @@ int main(int argc, char* argv[])
     splitString(curr_line, "\t", tokens);
     string curr_gene = tokens[0];
 
-    if (ADD_PARALOGS) {
+    if (ADD_PARALOGS) {      
       string curr_ensembl_paralogs = "";
       if (ensembl_paralogs.find(curr_gene) != ensembl_paralogs.end()) {
         curr_ensembl_paralogs = ensembl_paralogs[curr_gene];
@@ -2204,6 +2299,7 @@ int main(int argc, char* argv[])
 
 
   if (BARPLOT_HEAD != "" && CORRELATION_PREFIX != "") {
+    cout << "Creating barplots." << endl;
     if (REPMAP.find(",") != string::npos) {
       cerr << "Warning!  Barplots are not available when using more than one REPMAP.  Skipping." << endl;
     } else {
@@ -2218,20 +2314,26 @@ int main(int argc, char* argv[])
   // The logic is easier to process the output and sort and rank the
   // score without a proliferation penalty, than to add it earlier.
   if (!CHEMO) {
+    cout << "Ranking scores without proliferation penalty." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_before_rank_score_wo_prolif\"");
     system("sync");
     //    wo_prolif  org_rank
+    cout << "Reading tsv file..." << endl;
     ReadOnlyTSVFile ifpWP(OUT + ".temp_before_rank_score_wo_prolif", true, true);
+    cout << "...read tsv file" << endl;    
     ifpWP.readRow(0);
+    cout << "...read row" << endl;
     vector<string> header = ifpWP.tokens;
     size_t rank_col = numeric_limits<size_t>::max(),
            wo_prolif_col = numeric_limits<size_t>::max();
     for (size_t i = 0; i < header.size(); ++i) {
+      //cout << "\t" << i <<  " header." << endl;
       if (header[i] == "Rank") rank_col = i;
       else if (header[i] == "Score without proliferation penalty") wo_prolif_col = i;
     }
     Table<double, size_t, vector<string> > wp_data;
     for (size_t i = 1; !ifpWP.fail(); ++i) {
+      //cout << "\t" << i <<  " data." << endl;
       ifpWP.readRow(i);
       wp_data.push_back(convertFromString<double>(ifpWP.tokens[wo_prolif_col]),
                         convertFromString<size_t>(ifpWP.tokens[rank_col]),
@@ -2242,6 +2344,7 @@ int main(int argc, char* argv[])
     // True = sort by largest score without proliferation penality first.
     sortTable<0>(wp_data, true);
     for (size_t i = 0; i < wp_data.size(); ++i) {
+      //cout << "\t" << i <<  " table." << endl;
       double curr_score = 0.0;
       size_t curr_rank = 0;
       vector<string> tokens; 
@@ -2255,6 +2358,7 @@ int main(int argc, char* argv[])
     Ofstream ofpWP(OUT);
     ofpWP << joinStrings(header) << endl;
     for (size_t i = 0; i < wp_data.size(); ++i) {
+      //cout << "\t" << i <<  " wp_data." << endl;
       double curr_score = 0.0;
       size_t curr_rank = 0;
       vector<string> tokens; 
@@ -2268,6 +2372,7 @@ int main(int argc, char* argv[])
 
 
   if (POSITIVE_CONTROLS != "") {
+    cout << "Evaluating precision and recall." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_before_precision_recall\"");
     system("sync");
     ReadOnlyTSVFile ifpPR(OUT + ".temp_before_precision_recall", true, true);
@@ -2305,6 +2410,7 @@ int main(int argc, char* argv[])
  
 
   if (ADD_Z_SCORES && CHEMO && CHEMO_PAIRED && CORRELATION_PREFIX != "") {
+    cout << "Adding Z-scores." << endl;
     system("mv \"" + OUT + "\" \"" + OUT + ".temp_paired_diff_zvals\"");
     system("sync");
 
@@ -2837,6 +2943,7 @@ int main(int argc, char* argv[])
 
 
   if (ADD_COEFF_VAR) {
+    cout << "Adding coefficient of variation." << endl;
     system("mv " + OUT + " " + OUT + ".temp_coeff_var");
     system("sync");
     vector<float> test_cvs, ctrl_cvs, diff_cvs;
@@ -2900,6 +3007,7 @@ int main(int argc, char* argv[])
 
 
   if (KILLING_PLOTS != "") {
+    cout << "Adding killing plots." << endl;
     system("mv " + OUT + " " + OUT + ".temp_before_killing");
     system("sync");
     system("Rscript --vanilla \"" + EVAL_KILLING + "\" \"" + 
@@ -3062,6 +3170,7 @@ int main(int argc, char* argv[])
 
 
   if (CUTOFF != "") {
+    cout << "Adding cutoffs." << endl;
     string strata = "";
     if (STRATAS != "") {
       strata = "\"" + STRATAS + "\" " + 
@@ -3072,8 +3181,8 @@ int main(int argc, char* argv[])
     system("Rscript --vanilla \"" + EVAL_BETA + "\" \"" + OUT + "\" \"" +
             CUTOFF + "\" " + convertToString<size_t>(BETA_TOP_N) + " " +
             convertToString<double>(CUTOFF_P) + " TRUE " + strata);
-    if (STRATAS != "" &&
-        fileSize(CUTOFF) != static_cast<ifstream::pos_type>(-1) &&
+    if (STRATAS != "" &&      
+      fileSize(CUTOFF) != static_cast<ifstream::pos_type>(-1) &&
         fileSize(STRATAS + ".temp_rank_classes") != 
         static_cast<ifstream::pos_type>(-1)) {
       ReadOnlyTSVFile ifpC(CUTOFF, true, true);
@@ -3126,6 +3235,7 @@ int main(int argc, char* argv[])
 
 
   if (ADD_Z_SCORES && CUTOFF_Z != "") {
+    cout << "Adding Z-score cutoffs." << endl;
     ReadOnlyTSVFile ifpZ1(OUT, true, true);
     ifpZ1.readRow(0);
     size_t rank_col = numeric_limits<size_t>::max();
@@ -3152,6 +3262,7 @@ int main(int argc, char* argv[])
     // Next, do stratas as usual.
     string strata = "";
     if (STRATAS_Z != "") {
+      cout << "Adding Z-score stratas." << endl;
       strata = "\"" + STRATAS_Z + "\" " + 
                convertToString<size_t>(NUM_STRATA) + " " +
                convertToString<size_t>(STRATA_ADD) + " \"" +
@@ -3163,8 +3274,8 @@ int main(int argc, char* argv[])
     if (STRATAS_Z != "" &&
         fileSize(CUTOFF_Z) != static_cast<ifstream::pos_type>(-1) &&
         fileSize(STRATAS_Z + ".temp_rank_classes") !=
-        static_cast<ifstream::pos_type>(-1)) {
-      ReadOnlyTSVFile ifpCZ(CUTOFF_Z, true, true);
+        static_cast<ifstream::pos_type>(-1)) {          
+          ReadOnlyTSVFile ifpCZ(CUTOFF_Z, true, true);
       ifpCZ.readRow(1);
       size_t max_rank = convertFromString<size_t>(ifpCZ.tokens[2]);
       ifpCZ.close();
@@ -3225,6 +3336,7 @@ int main(int argc, char* argv[])
       ((ADD_Z_SCORES && CHEMO && CHEMO_PAIRED && CORRELATION_PREFIX != "") ||
        (ADD_Z_SCORES && 
         (!CHEMO || !CHEMO_PAIRED) && CORRELATION_PREFIX != ""))) {
+    cout << "Adding precision-recall." << endl;
     ReadOnlyTSVFile ifpZ1(OUT, true, true);
     ifpZ1.readRow(0);
     size_t rank_col = numeric_limits<size_t>::max();
@@ -3290,6 +3402,7 @@ int main(int argc, char* argv[])
   }
 
   if (ADD_UNIPROT) {
+    cout << "Adding Uniprot." << endl;
     ReadOnlyTSVFile ifpU(UNIPROT, true, true);
     ifpU.readRow(0);
     bool gene_found = false;
@@ -3368,6 +3481,7 @@ int main(int argc, char* argv[])
 
   if (RUN_GATHER_QC && CORRELATION_PREFIX != "" &&
       GATHER_QC_HTML != "" && GATHER_QC_TSV != "") {
+    cout << "Running gatherQC." << endl;
     string at_home = AT_HOME ? "AT_HOME=true" : "";
     system("ccaGatherQC COUNTS=\"" + COUNTS + "\" CORREL_NORMED_COUNTS=\"" + CORRELATION_PREFIX + ".normed_counts.tsv\" TSV=\"" + GATHER_QC_TSV + "\" HTML=\"" + GATHER_QC_HTML + "\" PREFIX=\"cca_files/\" " + at_home);
   }
@@ -3378,6 +3492,7 @@ int main(int argc, char* argv[])
   system("mkdir -p " + cca_outdir);
   cerr << "It is OK, if there are some no such file errors below.  Not all files are always generated, depending on the data and input parameters." << endl;
   if (INITQC_INPUT_PREFIX != "") {
+    cout << "Moving INITQC files." << endl;
     for (size_t k = 0; k < count_files.size(); ++k) {
       system("mv " + count_files[k] + INITQC_INPUT_PREFIX + "* " + cca_outdir);
       system("sync");
@@ -3410,6 +3525,8 @@ int main(int argc, char* argv[])
   }
   if (GATHER_QC_TSV != "") system("mv " + GATHER_QC_TSV + " " + cca_outdir);
 
+  cout << "CCA finished." << "Time taken = " << float( clock () - begin_time ) /  CLOCKS_PER_SEC << endl;
+  
   return 0;
 }
 

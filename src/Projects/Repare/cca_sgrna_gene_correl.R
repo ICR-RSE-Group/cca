@@ -2,6 +2,8 @@
 
 library(ComplexHeatmap)
 
+print("RSCRIPT-cca_sgrna_gene_correl")
+
 args = commandArgs(trailingOnly = TRUE)
 
 data <- read.delim(args[1], header = TRUE)
@@ -19,4 +21,4 @@ fileout <- paste(args[2], ".png", sep = "")
 hw = 1000
 png(fileout, height = hw, width = hw)
 draw(Heatmap(res, width = unit(12, "cm"), height = unit(12, "cm"), row_names_gp = gpar(fontsize = 8), column_names_gp = gpar(fontsize = 8), heatmap_legend_param = list(title = "Pearson correlation", titleposition = "topcenter", direction = "horizontal")), heatmap_legend_side = "top")
-dev.off()
+garbage <- dev.off()
