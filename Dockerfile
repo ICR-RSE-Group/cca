@@ -11,6 +11,7 @@
 #################################
 
 #FROM ubuntu:latest
+#FROM ubuntu:20.04
 FROM rocker/r-ver:4.3.2
 
 ENV DEBIAN_FRONTEND=noninteractive
