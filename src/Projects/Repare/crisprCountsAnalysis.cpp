@@ -1385,7 +1385,7 @@ void compute_output_lines(set<string>& ess,
 
 
 int main(int argc, char* argv[])
-{
+{  
   BeginCommandArguments
   CommandArgumentBoolDefaultDoc("AT_HOME", AT_HOME, true, "If true, then all files are assumed to be in /home, so /home/ is prepended to the input and output.  For Docker version only.");
   CommandArgumentStringDoc("COUNTS", COUNTS, "CSV of files, each of form sgRNA[tab]Gene[tab]Sample1[tab]Sample2[tab]...");
@@ -1471,6 +1471,96 @@ int main(int argc, char* argv[])
   CommandArgumentBoolDefaultDoc("ADD_UNIPROT", ADD_UNIPROT, true, "If true, add Uniprot and GO annotations to each gene.   Warning!  This will greatly increase the size of the CCA output table.");
   CommandArgumentFileInDefaultDoc("UNIPROT", UNIPROT, "/root/data/Uniprot/uniprot-human-gene-function-go.txt", "Uniprot file.");
   EndCommandArguments
+
+  const clock_t begin_time = clock();
+
+  //#############################################################################
+  cout << " ************ INPUTS ************ " << endl;
+  cout << "AT_HOME:\t" << AT_HOME << endl;
+  cout << "COUNTS:\t" << COUNTS << endl;
+  cout << "REPMAP:\t" << REPMAP << endl;
+  cout << "ALLOW_SUPERSET:\t" << ALLOW_SUPERSET << endl;
+  cout << "PARAMS:\t" << PARAMS << endl;
+  cout << "SINGLE_CELL_LINE:\t" << SINGLE_CELL_LINE << endl;
+  cout << "CHEMO:\t" << CHEMO << endl;
+  cout << "CHEMO_PAIRED:\t" << CHEMO_PAIRED << endl;
+  cout << "CHEMO_NO_DEPLETION:\t" << CHEMO_NO_DEPLETION << endl;
+  cout << "RESISTOR_SCREEN:\t" << RESISTOR_SCREEN << endl;
+  cout << "MAX_CONTROL_RATIO:\t" << MAX_CONTROL_RATIO << endl;
+  cout << "RESISTOR_OUT:\t" << RESISTOR_OUT << endl;
+  cout << "ADD_COEFF_VAR:\t" << ADD_COEFF_VAR << endl;
+  cout << "MAX_MEDIAN_DIFF:\t" << MAX_MEDIAN_DIFF << endl;
+  cout << "MEDIAN_NORMALIZATION:\t" << MEDIAN_NORMALIZATION << endl;
+  cout << "CORRELATION_R:\t" << CORRELATION_R << endl;
+  cout << "CORRELATION_PREFIX:\t" << CORRELATION_PREFIX << endl;
+  cout << "STOP_AFTER_CORRELATION:\t" << STOP_AFTER_CORRELATION << endl;
+  cout << "BARPLOT_HEAD:\t" << BARPLOT_HEAD << endl;
+  cout << "BARPLOT_ADD_RANK:\t" << BARPLOT_ADD_RANK << endl;
+  cout << "BARPLOT_TOP_N:\t" << BARPLOT_TOP_N << endl;
+  cout << "BARPLOT_MIN:\t" << BARPLOT_MIN << endl;
+  cout << "BARPLOT_MAX:\t" << BARPLOT_MAX << endl;
+  cout << "BARPLOT_BY:\t" << BARPLOT_BY << endl;
+  cout << "BARPLOT_NEG_LOG2:\t" << BARPLOT_NEG_LOG2 << endl;
+  cout << "BARPLOT_EPSILON:\t" << BARPLOT_EPSILON << endl;
+  cout << "ADD_Z_SCORES:\t" << ADD_Z_SCORES << endl;
+  cout << "Z_SCORES_MIN:\t" << Z_SCORES_MIN << endl;
+  cout << "Z_SCORES_HALF_WINDOW:\t" << Z_SCORES_HALF_WINDOW << endl;
+  cout << "Z_SCORES_WINDOW_MIN:\t" << Z_SCORES_WINDOW_MIN << endl;
+  cout << "Z_SCORES_L:\t" << Z_SCORES_L << endl;
+  cout << "MIN_CORRELATION_OUTPUT:\t" << MIN_CORRELATION_OUTPUT << endl;
+  cout << "DETREND:\t" << DETREND << endl;
+  cout << "DETREND_AUTO:\t" << DETREND_AUTO << endl;
+  cout << "DETREND_DIR:\t" << DETREND_DIR << endl;
+  cout << "DETREND_COLUMNS:\t" << DETREND_COLUMNS << endl;
+  cout << "DETREND_BASE:\t" << DETREND_BASE << endl;
+  cout << "DETREND_OUT:\t" << DETREND_OUT << endl;
+  cout << "DETREND_MIN_PCT:\t" << DETREND_MIN_PCT << endl;
+  cout << "ESS:\t" << ESS << endl;
+  cout << "ADD_RIBO:\t" << ADD_RIBO << endl;
+  cout << "ESS_RIBO:\t" << ESS_RIBO << endl;
+  cout << "NONESS:\t" << NONESS << endl;
+  cout << "INITQC:\t" << INITQC << endl;
+  cout << "INITQC_INPUT_PREFIX:\t" << INITQC_INPUT_PREFIX << endl;
+  cout << "INITQC_PREFIX:\t" << INITQC_PREFIX << endl;
+  cout << "NUM_THREADS:\t" << NUM_THREADS << endl;
+  cout << "MIXED_LIBRARIES:\t" << MIXED_LIBRARIES << endl;
+  cout << "SGRNA_PAIRED_DIFFERENCES:\t" << SGRNA_PAIRED_DIFFERENCES << endl;
+  cout << "ADD_TOP_TWO:\t" << ADD_TOP_TWO << endl;
+  cout << "KILLING_PLOTS:\t" << KILLING_PLOTS << endl;
+  cout << "EVAL_KILLING:\t" << EVAL_KILLING << endl;
+  cout << "FC_KILLING:\t" << FC_KILLING << endl;
+  cout << "TOP_FC_KILL_GENES:\t" << TOP_FC_KILL_GENES << endl;
+  cout << "NORMALIZED_COUNT:\t" << NORMALIZED_COUNT << endl;
+  cout << "MIN_T0:\t" << MIN_T0 << endl;
+  cout << "LARGE_NEG:\t" << LARGE_NEG << endl;
+  cout << "ADD_RESISTORS:\t" << ADD_RESISTORS << endl;
+  cout << "TSG_FILE:\t" << TSG_FILE << endl;
+  cout << "ENSEMBL_PARALOGS:\t" << ENSEMBL_PARALOGS << endl;
+  cout << "ADD_PARALOGS:\t" << ADD_PARALOGS << endl;
+  cout << "EVAL_BETA:\t" << EVAL_BETA << endl;
+  cout << "EVAL_BETA_Z:\t" << EVAL_BETA_Z << endl;
+  cout << "BETA_TOP_N:\t" << BETA_TOP_N << endl;
+  cout << "CUTOFF_P:\t" << CUTOFF_P << endl;
+  cout << "CUTOFF:\t" << CUTOFF << endl;
+  cout << "CUTOFF_Z:\t" << CUTOFF_Z << endl;
+  cout << "STRATAS:\t" << STRATAS << endl;
+  cout << "STRATAS_Z:\t" << STRATAS_Z << endl;
+  cout << "NUM_STRATA:\t" << NUM_STRATA << endl;
+  cout << "STRATA_ADD:\t" << STRATA_ADD << endl;
+  cout << "PRECISION_RECALL:\t" << PRECISION_RECALL << endl;
+  cout << "POSITIVE_CONTROLS:\t" << POSITIVE_CONTROLS << endl;
+  cout << "POSITIVE_AUTO:\t" << POSITIVE_AUTO << endl;
+  cout << "POSITIVE_DIR:\t" << POSITIVE_DIR << endl;
+  cout << "EVAL_PR:\t" << EVAL_PR << endl;
+  cout << "OUT:\t" << OUT << endl;
+  cout << "OUT_MAX:\t" << OUT_MAX << endl;
+  cout << "RUN_GATHER_QC:\t" << RUN_GATHER_QC << endl;
+  cout << "GATHER_QC_HTML:\t" << GATHER_QC_HTML << endl;
+  cout << "GATHER_QC_TSV:\t" << GATHER_QC_TSV << endl;
+  cout << "ADD_UNIPROT:\t" << ADD_UNIPROT << endl;
+  cout << "UNIPROT:\t" << UNIPROT << endl;
+  cout << " ******************************** " << endl;
+  //#############################################################################
 
   if (MAX_CONTROL_RATIO == -1.0) {
     if (CHEMO || RESISTOR_SCREEN) MAX_CONTROL_RATIO = 0.0;
@@ -2237,7 +2327,7 @@ int main(int argc, char* argv[])
     size_t rank_col = numeric_limits<size_t>::max(),
            wo_prolif_col = numeric_limits<size_t>::max();
     for (size_t i = 0; i < header.size(); ++i) {
-      cout << "\t" << i <<  " header." << endl;
+      //cout << "\t" << i <<  " header." << endl;
       if (header[i] == "Rank") rank_col = i;
       else if (header[i] == "Score without proliferation penalty") wo_prolif_col = i;
     }
@@ -3435,6 +3525,8 @@ int main(int argc, char* argv[])
   }
   if (GATHER_QC_TSV != "") system("mv " + GATHER_QC_TSV + " " + cca_outdir);
 
+  cout << "CCA finished." << "Time taken = " << float( clock () - begin_time ) /  CLOCKS_PER_SEC << endl;
+  
   return 0;
 }
 

@@ -1,23 +1,27 @@
 #################################
-# docker build -t icrsc/cca .
+# docker build -t icrsc/icr-cca .
 
 # docker run --rm -it -v ./login/temp:/home:rw tohsumirepare/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
-# docker run --rm -it -v ./login/temp2:/home:rw icrsc/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+# docker run --rm -it -v ./login/temp:/home:rw tohsumirepare/cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT=noclone
+# docker run --rm -it -v ./login/temp2:/home icrsc/icr-cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT_MAX=noclone
+# docker run --rm -it -v ./login/temp2:/home icrsc/icr-cca crisprCountsAnalysis COUNTS=noClone.txt REPMAP=noClone.repmap OUT=noClone
 
 #sudo rm -rf login/temp/cca_files
 #sudo rm -rf login/temp2/cca_files
 #################################
 
-FROM ubuntu:latest
+#FROM ubuntu:latest
+FROM rocker/r-ver:4.3.2
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends apt-transport-https software-properties-common dirmngr gpg-agent
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+#RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential gfortran libblas-dev liblapack-dev libz-dev bwa wget r-base libpng-dev imagemagick
+#RUN apt-get update && apt-get install -y --no-install-recommends build-essential gfortran libblas-dev liblapack-dev libz-dev bwa wget r-base libpng-dev imagemagick
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential gfortran libblas-dev liblapack-dev libz-dev bwa wget libpng-dev imagemagick
 
 #RUN Rscript -e "install.packages('rspm') ; rspm::enable()" 
 RUN Rscript -e "install.packages('ggplot2')"
